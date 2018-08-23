@@ -2,19 +2,24 @@ package com.wojder.breedy
 
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.media.MediaActionSound
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.os.Environment
-import android.provider.MediaStore
+import android.os.Handler
 import android.provider.MediaStore.*
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
+import com.wojder.breedy.tools.ImageTools
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
+import com.wojder.breedy.imageClassifier.*
 import com.wojder.breedy.tools.getUriFromPhotoPath
+import kotlinx.android.synthetic.main.activity_main.*
 import java.io.File
+import com.wojder.breedy.Result
 
 private const val REQUEST_PERMISSION = 1
 private const val REQUEST_TAKE_PICTURE = 2
@@ -22,6 +27,8 @@ private const val REQUEST_TAKE_PICTURE = 2
 class MainActivity : AppCompatActivity() {
 
     private var photoFilePath = ""
+    private lateinit var classifier: Classifier
+    private val handler = Handler()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,10 +39,29 @@ class MainActivity : AppCompatActivity() {
 
     private fun checkPermissions() {
         if (arePermsAlreadyGranted()) {
-            takePhoto()
+            init()
         } else {
             requestPermissions()
         }
+    }
+
+    private fun init() {
+        createImageClassifier()
+        takePhoto()
+
+    }
+
+    private fun createImageClassifier() {
+        classifier = ImageClassifierFactory.createClassifier(
+                assets,
+                GRAPH_FILE_PATH,
+                LABELS_FILE_PATH,
+                IMAGE_SIZE,
+                GRAPH_INPUT_NAME,
+                GRAPH_OUTPUT_NAME
+        )
+
+
     }
 
     private fun takePhoto() {
@@ -63,8 +89,47 @@ class MainActivity : AppCompatActivity() {
         if (requestCode == REQUEST_TAKE_PICTURE && file.exists()) {
             //mamy zdjęcie
             Toast.makeText(this, "MAMY zdjęcie", Toast.LENGTH_LONG).show()
+
+            classifyTakenPhoto(file)
         }
     }
+
+    private fun classifyTakenPhoto(file: File) {
+        val photoBitmap = BitmapFactory.decodeFile(file.absolutePath)
+        val croppedBitmap = ImageTools().getCroppedBitmap(photoBitmap)
+        classifyAndShowResult(croppedBitmap)
+    }
+
+    private fun classifyAndShowResult(croppedBitmap: Bitmap) {
+        runInBackground(
+                Runnable {
+                    val result = classifier.recognizeImage(croppedBitmap)
+                    showResult(result)
+                }
+        )
+    }
+
+    @Synchronized
+    private fun runInBackground(runnable: Runnable) {
+        handler.post(runnable)
+    }
+
+    private fun showResult(result: Result) {
+        textResult.text = result.result.toUpperCase()
+        layoutContainer.setBackgroundColor(getColorFromResult(result.result))
+    }
+
+    @Suppress("DEPRECATION")
+    private fun getColorFromResult(result: String): Int {
+        return if (result == getString(R.string.boxer)) {
+            resources.getColor(R.color.boxer)
+        } else {
+            resources.getColor(R.color.human)
+        }
+
+    }
+
+
 
     private fun arePermsGranted(grantResults: IntArray) =
             grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED
@@ -90,6 +155,7 @@ class MainActivity : AppCompatActivity() {
             // do stuff
             takePhoto()
             true
-        } else -> super.onOptionsItemSelected(item)
+        }
+        else -> super.onOptionsItemSelected(item)
     }
 }
