@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/layoutContainer"
     android:layout_width="match_parent"
@@ -12,42 +13,18 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:scaleType="fitCenter" />
+        android:scaleType="fitCenter"/>
 
     <TextView
         android:id="@+id/textResult"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@android:color/transparent"
+        android:padding="16dp"
         android:gravity="center"
-        android:paddingBottom="4dp"
         android:textAppearance="@style/TextAppearance.AppCompat.Display2"
         android:textColor="@android:color/white"
+        android:background="@android:color/transparent"
         tools:text="@string/boxer"
-        tools:textColor="@android:color/black" />
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="8dp"
-        android:layout_gravity="center">
-
-        <TextView
-            android:id="@+id/labelConfidence"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.3"
-            android:gravity="center"
-            android:text="Probability: " />
-
-        <TextView
-            android:id="@+id/textConfidence"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.7"
-            android:text="0,567788"
-            android:textSize="20sp" />
-    </LinearLayout>
+        tools:textColor="@android:color/black"/>
 
 </LinearLayout>
