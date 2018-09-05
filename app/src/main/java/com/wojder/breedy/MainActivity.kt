@@ -121,10 +121,10 @@ class MainActivity : AppCompatActivity() {
 
     @Suppress("DEPRECATION")
     private fun getColorFromResult(result: String): Int {
-        return if (result == getString(R.string.boxer)) {
-            resources.getColor(R.color.boxer)
-        } else {
-            resources.getColor(R.color.human)
+        return when (result) {
+            getString(R.string.human) -> resources.getColor(R.color.human)
+            getString(R.string.boxer) -> resources.getColor(R.color.boxer)
+            else -> resources.getColor(R.color.shephard)
         }
 
     }

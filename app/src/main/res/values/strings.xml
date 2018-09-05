@@ -2,4 +2,6 @@
     <string name="app_name">Breedy</string>
     <string name="take_photo">take photo</string>
     <string name="boxer">boxer</string>
+    <string name="shephard">shephard</string>
+    <string name="human">human</string>
 </resources>
