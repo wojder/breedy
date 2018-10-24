@@ -1,9 +1,11 @@
 package com.wojder.breedy
 
+import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.os.Handler
@@ -11,22 +13,24 @@ import android.provider.MediaStore.*
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import com.wojder.breedy.tools.ImageTools
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
 import com.wojder.breedy.imageClassifier.*
-import com.wojder.breedy.tools.getUriFromPhotoPath
+import com.wojder.breedy.tools.getUriFromFilePath
 import kotlinx.android.synthetic.main.activity_main.*
 import java.io.File
-import com.wojder.breedy.Result
 
 private const val REQUEST_PERMISSION = 1
 private const val REQUEST_TAKE_PICTURE = 2
+private const val READ_REQUEST_CODE: Int = 42
+private const val FILE_FROM_MEMORY: Int = 101
 
 class MainActivity : AppCompatActivity() {
 
-    private var photoFilePath = ""
+    private var filePath = ""
     private lateinit var classifier: Classifier
     private val handler = Handler()
 
@@ -63,10 +67,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun takePhoto() {
-        photoFilePath = Environment.getExternalStoragePublicDirectory(
+        filePath = Environment.getExternalStoragePublicDirectory(
                 Environment.DIRECTORY_PICTURES).absolutePath + "/${System.currentTimeMillis()}.jpg"
 
-        val photoUri = getUriFromPhotoPath(this, photoFilePath)
+        val photoUri = getUriFromFilePath(this, filePath)
 
         val photoIntent = Intent(ACTION_IMAGE_CAPTURE)
         photoIntent.putExtra(EXTRA_OUTPUT, photoUri)
@@ -83,13 +87,54 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        val file = File(photoFilePath)
-        if (requestCode == REQUEST_TAKE_PICTURE && file.exists()) {
+
+        if (requestCode == REQUEST_TAKE_PICTURE) {
+            val file = File(filePath)
             //mamy zdjęcie
             Toast.makeText(this, "MAMY zdjęcie", Toast.LENGTH_LONG).show()
 
             classifyTakenPhoto(file)
+        } else if (requestCode == READ_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            Toast.makeText(this, "MAMY plik z pamięci", Toast.LENGTH_LONG).show()
+            if (data != null) {
+                val uri = data.data
+                Log.d("URI", uri.toString())
+                val mimeType = getMimeTypeFromUri(uri)
+                uri.path
+                val finalPath :String = uri.path + "/${System.currentTimeMillis()}" + getExtensionFromUri(mimeType)
+                //val fileUri = getUriFromFilePath(this, uri.path)
+                Toast.makeText(this, "Plik$finalPath", Toast.LENGTH_LONG).show()
+                uri.queryParameterNames
+                uri.authority
+                val finalFileName = getFileFromPath(finalPath)
+                val file = File(finalFileName)
+                uri.scheme
+            }
         }
+    }
+
+    private fun getFileFromPath(finalPath: String) : String{
+        return finalPath.substringAfterLast("/")
+    }
+
+    private fun getFileNameFromFile(file: File): String {
+        return file.name
+    }
+
+    private fun getExtensionFromUri(mimeType: String?): String {
+
+        return if (mimeType.equals("application/pdf")) {
+            ".pdf"
+        } else {
+            ".jpg"
+        }
+    }
+
+    private fun getMimeTypeFromUri(uri: Uri): String? {
+        val mimeType: String? = uri.let { returnUri ->
+            contentResolver.getType(returnUri)
+        }
+        return mimeType
     }
 
     private fun classifyTakenPhoto(file: File) {
@@ -154,6 +199,30 @@ class MainActivity : AppCompatActivity() {
             takePhoto()
             true
         }
+        R.id.take_file -> {
+            takeFileFromMemory()
+            true
+        }
+
         else -> super.onOptionsItemSelected(item)
+    }
+
+    private fun takeFileFromMemory() {
+        performFileSearch()
+        takeUri()
+    }
+
+    private fun takeUri() {
+
+    }
+
+    private fun performFileSearch() {
+        val fileIntent = Intent(Intent.ACTION_GET_CONTENT).apply {
+            addCategory(Intent.CATEGORY_OPENABLE)
+            type = "*/*"
+        }
+
+        startActivityForResult(fileIntent, READ_REQUEST_CODE)
+
     }
 }

@@ -6,7 +6,7 @@ import android.os.Build
 import android.support.v4.content.FileProvider
 import java.io.File
 
-fun getUriFromPhotoPath(context: Context, filePath: String) : Uri {
+fun getUriFromFilePath(context: Context, filePath: String) : Uri {
     val file = File(filePath)
 
     return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {

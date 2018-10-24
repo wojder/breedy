@@ -6,4 +6,9 @@
         android:icon="@android:drawable/ic_menu_camera"
         app:showAsAction="ifRoom"
         android:title="@string/take_photo" />
+    <item
+        android:id="@+id/take_file"
+        android:icon="@android:drawable/ic_input_add"
+        app:showAsAction="ifRoom"
+        android:title="@string/take_file"/>
 </menu>
