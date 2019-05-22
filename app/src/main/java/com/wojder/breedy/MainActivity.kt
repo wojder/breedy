@@ -14,6 +14,7 @@ import android.support.v7.app.AppCompatActivity
 import com.wojder.breedy.tools.ImageTools
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.widget.Toast
 import com.wojder.breedy.imageClassifier.*
 import com.wojder.breedy.tools.getUriFromPhotoPath
@@ -34,7 +35,11 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+
+
         checkPermissions()
+
+        createImageClassifier()
     }
 
     private fun checkPermissions() {
@@ -46,8 +51,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun init() {
+
         createImageClassifier()
-        takePhoto()
+
 
     }
 
@@ -116,7 +122,9 @@ class MainActivity : AppCompatActivity() {
     private fun showResult(result: Result) {
         textResult.text = result.result.toUpperCase()
         textConfidence.text = result.confidence.toString()
-        layoutContainer.setBackgroundColor(getColorFromResult(result.result))
+        labelConfidence.visibility = View.VISIBLE
+
+                layoutContainer.setBackgroundColor(getColorFromResult(result.result))
     }
 
     @Suppress("DEPRECATION")
@@ -152,6 +160,10 @@ class MainActivity : AppCompatActivity() {
         R.id.take_photo -> {
             // do stuff
             takePhoto()
+            true
+        }
+        R.id.text_recognition -> {
+
             true
         }
         else -> super.onOptionsItemSelected(item)

@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "207263671665",
+    "firebase_url": "https://breedy-e236e.firebaseio.com",
+    "project_id": "breedy-e236e",
+    "storage_bucket": "breedy-e236e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:207263671665:android:c18d19bba38c4ad3",
+        "android_client_info": {
+          "package_name": "com.wojder.breedy"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "207263671665-mi1tut00e9rapng6ous0k0i2j4lhrptr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBjVHIJjq8r4Rl3EDvFvSoL6S2dQFb8VJ0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "207263671665-mi1tut00e9rapng6ous0k0i2j4lhrptr.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

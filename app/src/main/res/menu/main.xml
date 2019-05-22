@@ -3,7 +3,12 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/take_photo"
-        android:icon="@android:drawable/ic_menu_camera"
+        android:icon="@mipmap/ic_image_recognition"
+        android:title="@string/take_photo"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/text_recognition"
+        android:icon="@mipmap/ic_text_recognition"
         app:showAsAction="ifRoom"
-        android:title="@string/take_photo" />
+        android:title="@string/text_recognition" />
 </menu>
